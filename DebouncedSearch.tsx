@@ -1,3 +1,4 @@
+
 const SearchBar = ({
   onSearch,
   placeHolder,
@@ -7,16 +8,18 @@ const SearchBar = ({
 }) => {
   const [query, setQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
-  let debounceHandler: any;
-
+  const debounceHandler = useRef<NodeJS.Timeout | null>(null); // useRef to store the debounce timer
+  const clearDebounceRef = () => {
+    if (debounceHandler.current) {
+      clearTimeout(debounceHandler.current);
+    }
+  };
   useEffect(() => {
-    // Setting up debounced query once user stops typing
-    debounceHandler = setTimeout(() => {
+    clearDebounceRef();
+    debounceHandler.current = setTimeout(() => {
       setDebouncedQuery(query);
     }, 500);
-
-    //Clearing the timer
-    return () => clearTimeout(debounceHandler);
+    return clearDebounceRef;
   }, [query]);
 
   useEffect(() => {
@@ -25,8 +28,7 @@ const SearchBar = ({
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      // Clearing out the timer if user hits enter and calling the callback
-      clearTimeout(debounceHandler);
+      clearDebounceRef();
       onSearch(debouncedQuery);
     }
   };
@@ -34,11 +36,11 @@ const SearchBar = ({
   return (
     <input
       placeholder={placeHolder}
+      onSearch={onSearch}
       onChange={(e: any) => setQuery(e?.target?.value)}
       value={query}
       style={{ width: "50%" }}
       onKeyDown={handleKeyDown}
-      allowClear
     />
   );
 };
