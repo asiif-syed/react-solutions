@@ -1,14 +1,14 @@
+/*
+  A common Debounced search component
+  Calls the api to search after 500s of typing
+  Calls the api when user hits on the enter key to search
+*/
 
-const SearchBar = ({
-  onSearch,
-  placeHolder,
-}: {
-  placeHolder: string;
-  onSearch: (value: string) => void;
-}) => {
+const SearchBar = ({ onSearch, placeHolder }) => {
   const [query, setQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
-  const debounceHandler = useRef<NodeJS.Timeout | null>(null); // useRef to store the debounce timer
+  const debounceHandler = (useRef < NodeJS.Timeout) | (null > null); // useRef to store the debounce timer
+  
   const clearDebounceRef = () => {
     if (debounceHandler.current) {
       clearTimeout(debounceHandler.current);
@@ -26,8 +26,8 @@ const SearchBar = ({
     onSearch(debouncedQuery);
   }, [debouncedQuery, onSearch]);
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
       clearDebounceRef();
       onSearch(debouncedQuery);
     }
@@ -37,7 +37,7 @@ const SearchBar = ({
     <input
       placeholder={placeHolder}
       onSearch={onSearch}
-      onChange={(e: any) => setQuery(e?.target?.value)}
+      onChange={(e) => setQuery(e?.target?.value)}
       value={query}
       style={{ width: "50%" }}
       onKeyDown={handleKeyDown}
